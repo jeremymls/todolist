@@ -1,9 +1,26 @@
 # Learn more about services, parameters and containers at
 # http://symfony.com/doc/current/book/service_container.html
 parameters:
+  container.autowiring.strict_mode: true
 #    parameter_name: value
 
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  AppBundle\:
+    resource: '../../src/AppBundle/*'
+    # exclude: '../../src/AppBundle/{Entity,Repository}'
+
+    # controllers are imported separately to make sure they're public
+    # and have a tag that allows actions to type-hint services
+  AppBundle\Controller\:
+    resource: '../../src/AppBundle/Controller'
+    tags: ['controller.service_arguments']
+
+
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
