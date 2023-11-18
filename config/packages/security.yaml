@@ -1,5 +1,6 @@
 security:
-    encoders:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
         App\Entity\User:
             algorithm: bcrypt
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
@@ -7,18 +8,19 @@ security:
         users:
             entity:
                 class: App\Entity\User
-                property: email
+                property: username
         users_in_memory: { memory: null }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: lazy
-            provider: users_in_memory
-            guard:
-                authenticators:
-                    - App\Security\ToDoListAuthenticator
+            lazy: true
+            provider: users
+            custom_authenticator: App\Security\ToDoListAuthenticator
+            form_login:
+                login_path: login
+                check_path: login
             logout:
                 path: logout
                 # where to redirect after logout
@@ -33,7 +35,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
