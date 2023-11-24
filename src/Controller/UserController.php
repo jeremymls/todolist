@@ -53,12 +53,16 @@ class UserController extends AbstractController
     public function editAction(User $user, Request $request, UserPasswordHasherInterface $passwordEncoder)
     {
         $form = $this->createForm(UserType::class, $user);
-
+        $old_pass = $user->getPassword();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordEncoder->hashPassword($user, $user->getPassword());
-            $user->setPassword($password);
+            if ($user->getPassword()) {
+                $password = $passwordEncoder->hashPassword($user, $user->getPassword());
+                $user->setPassword($password);
+            } else {
+                $user->setPassword($old_pass);
+            }
 
             $this->em->flush();
 
