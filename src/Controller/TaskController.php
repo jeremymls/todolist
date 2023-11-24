@@ -80,6 +80,12 @@ class TaskController extends AbstractController
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTaskAction(Task $task)
     {
+        if ($task->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer une tâche qui ne vous appartient pas.');
+        }
+        if ($this->isGranted('ROLE_ADMIN') && (!in_array($task->getUser(), ['Inconnu', $this->getUser()]))) {
+            throw $this->createAccessDeniedException('En tant qu\'administrateur, vous ne pouvez pas supprimer une tâche qui ne vous appartient pas ou qui n\'est pas assignée à l\'utilisateur inconnu.');
+        }
         $this->em->remove($task);
         $this->em->flush();
 
