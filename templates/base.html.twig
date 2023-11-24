@@ -10,8 +10,13 @@
 
         <title>{% block title %}To Do List app{% endblock %}</title>
 
-        <!-- Bootstrap Core CSS -->
-        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
 
         <!-- Custom CSS -->
         <link href="{{ asset('css/shop-homepage.css') }}" rel="stylesheet">
@@ -36,17 +41,17 @@
 
         <!-- Page Content -->
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-between my-3">
+                <div class="col-auto">
                     {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('user_list') }}" class="btn btn-primary">Liste des utilisateurs</a>
                     <a href="{{ path('user_create') }}" class="btn btn-success">Créer un utilisateur</a>
                     {% endif %}
-
+                </div>
+                <div class="col-auto">
                     {% if app.user %}
-                    <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
+                    <a href="{{ path('logout') }}" class="ms-auto btn btn-danger">Se déconnecter</a>
                     {% endif %}
-
                     {% if not app.user and 'login' != app.request.attributes.get('_route') %}
                     <a href="{{ path('login') }}" class="btn btn-success">Se connecter</a>
                     {% endif %}
@@ -72,9 +77,7 @@
                 </div>
             </div>
 
-            <br />
-
-            <div class="row">
+            <div class="row my-3">
                 <div class="col-md-12">
                     {% block body %}{% endblock %}
                 </div>
@@ -88,7 +91,7 @@
             <footer>
                 <div class="row">
                     <div class="col-lg-12">
-                        <p class="pull-right">Copyright &copy; OpenClassrooms</p>
+                        <p class="text-end">Copyright &copy; OpenClassrooms</p>
                     </div>
                 </div>
             </footer>
