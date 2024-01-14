@@ -1,0 +1,14 @@
+# Sample .blackfire.yaml file
+# Read more about .blackfire.yaml at https://blackfire.io/docs/testing-cookbooks/tests
+tests:
+    "The homepage should be fast":
+        path: "/"
+recommendations:
+    php.php_preloading:
+        enabled: false
+    php.disable_symfony_resource_tracking:
+        enabled: false
+    php.symfony.disable_debug:
+        enabled: false
+    php.dump_composer_autoloader_classmap:
+        enabled: false
