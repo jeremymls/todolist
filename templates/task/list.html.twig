@@ -4,16 +4,14 @@
 
 {% block body %}
     <a href="{{ path('task_create') }}" class="btn btn-info">Créer une tâche</a>
-    <div class="row">
+    <div class="row mt-3" data-masonry='{"percentPosition": true }'>
         {% for task in tasks %}
-        <div class="col-sm-4 col-lg-4 col-md-4">
-            <div class="thumbnail">
+        <div class="col-sm-4 col-lg-4 col-md-4 pe-md-4 mt-3">
+            <div class="thumbnail border border-1 border-secondary p-3 rounded-3">
                 <div class="caption">
-                    <h4 class="pull-right">
-                        {% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}
-                    </h4>
+                    <h4 class="float-end">{% if task.isDone %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-xmark"></i>{% endif %}</h4>
                     <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
-                    <p>{{ task.content }}</p>
+                    <p>{{ task.content | nl2br }}</p>
                     <em>Auteur : {{ task.user }}</em>
                 </div>
                 <div class="row">
