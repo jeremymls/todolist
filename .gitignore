@@ -48,3 +48,4 @@ phpunit.xml
 .phpunit.cache/
 ###< phpunit/phpunit ###
 .php-cs-fixer.cache
+public/.htaccess
