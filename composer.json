@@ -17,6 +17,7 @@
         "doctrine/annotations": "*",
         "doctrine/common": "^3.0",
         "doctrine/doctrine-bundle": "^2.0",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "*",
         "doctrine/persistence": "*",
         "incenteev/composer-parameter-handler": "^2.0",
