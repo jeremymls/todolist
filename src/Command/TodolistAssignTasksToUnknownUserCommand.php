@@ -49,7 +49,7 @@ class TodolistAssignTasksToUnknownUserCommand extends Command
         $io->writeln('Adresse mail: ' . $mail);
         $io->writeln('Mot de passe: ' . $pass);
 
-        
+
         $user = $this->registry->getRepository(User::class)->findOneByUsername('Inconnu');
         if (null === $user) {
             $io->section('Création de l\'utilisateur');
