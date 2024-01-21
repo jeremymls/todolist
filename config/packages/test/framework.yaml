@@ -1,4 +1,8 @@
 framework:
     test: true
-    session:
-        storage_id: session.storage.mock_file
+    handle_all_throwables: false
+    annotations:
+        enabled: false
+
+#     session:
+#         storage_id: session.storage.mock_file

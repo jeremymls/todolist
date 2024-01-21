@@ -1,0 +1,5 @@
+rules:
+    application_not_bootable:
+        enabled: true
+    php.neglected_tests:
+        enabled: true
