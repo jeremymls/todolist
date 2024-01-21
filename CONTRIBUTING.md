@@ -1,31 +1,6 @@
 # Contribuer à To Do List
 
-## Documentation de l'Implémentation de l'Authentification
-
-### Fichiers à Modifier
-
-- **`security.yaml` :**
-  - Contient la configuration de sécurité de l'application.
-  - Définit les paramètres d'authentification.
-
-### Processus d'Authentification
-
-- L'authentification est basée sur un formulaire de connexion.
-- Symfony vérifie les informations fournies et authentifie l'utilisateur si les identifiants sont valides.
-- Le formulaire est géré par `App\Security\ToDoListAuthenticator`.
-  - Implémente l'interface `Symfony\Component\Security\Guard\AuthenticatorInterface`.
-  - Contient la logique d'authentification personnalisée.
-- Redirection :
-  - Réussite : Page d'accueil.
-  - Échec : Page de connexion avec un message d'erreur.
-
-### Stockage des Utilisateurs
-
-- Les utilisateurs sont stockés dans la base de données.
-- `App\Entity\User` représente l'entité utilisateur, mappée à la table correspondante.
-- La propriété `username` est utilisée comme identifiant unique.
-
-## Collaboration et Processus de Modification
+## Processus de Modification
 
 1. **Clonez le dépôt Git :**
    - `git clone https://url_du_depot.git`
