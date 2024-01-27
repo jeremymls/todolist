@@ -36,7 +36,7 @@ class TaskControllerTest extends WebTestCase
         $this->em = $this->client->getContainer()->get('doctrine')->getManager();
         $this->urlGenerator = $this->client->getContainer()->get('router');
         $userRepository = $this->em->getRepository(User::class);
-        $this->testUser = $userRepository->findOneBy(['username' => 'Test2']);
+        $this->testUser = $userRepository->findOneBy(['username' => 'user']);
         $this->client->loginUser($this->testUser);
     }
 
@@ -53,8 +53,8 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $this->client->submitForm('Ajouter', [
-            'task[title]' => 'Test',
-            'task[content]' => 'Test',
+            'task[title]' => 'Test tâche',
+            'task[content]' => 'Test contenu',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
 
@@ -63,14 +63,14 @@ class TaskControllerTest extends WebTestCase
 
         // Edit
         $taskRepository = $this->em->getRepository(Task::class);
-        $task = $taskRepository->findOneBy(['title' => 'Test']);
+        $task = $taskRepository->findOneBy(['title' => 'Test tâche']);
         $taskID = $task->getId();
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_edit', ['id' => $taskID]));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $this->client->submitForm('Modifier', [
-            'task[title]' => 'Test_edit',
-            'task[content]' => 'Test_edit',
+            'task[title]' => 'Test édition de tâche',
+            'task[content]' => 'Test édition de contenu',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
 
@@ -86,7 +86,7 @@ class TaskControllerTest extends WebTestCase
 
         // Delete (with admin)
         $userRepository = $this->em->getRepository(User::class);
-        $otherUser = $userRepository->findOneBy(['username' => 'Test']);
+        $otherUser = $userRepository->findOneBy(['username' => 'admin']);
         $this->client->loginUser($otherUser);
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => $taskID]));
 
@@ -94,7 +94,7 @@ class TaskControllerTest extends WebTestCase
 
         // Delete (with user who doesn't own the task)
         $userRepository = $this->em->getRepository(User::class);
-        $otherUser = $userRepository->findOneBy(['username' => 'Test3']);
+        $otherUser = $userRepository->findOneBy(['username' => 'otherUser']);
         $this->client->loginUser($otherUser);
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_delete', ['id' => $taskID]));
 

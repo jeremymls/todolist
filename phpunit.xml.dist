@@ -15,17 +15,23 @@ failOnWarning="true"
         <server name="KERNEL_CLASS" value="App\Kernel"/>
         <server name="DATABASE_URL" value="mysql://root:root@127.0.0.1:3306/todolist_test"/>
     </php>
+
     <testsuites>
+        <testsuite name="start">
+            <file>tests/StartTest.php</file>
+        </testsuite>
+
         <testsuite name="unit">
             <directory>tests/Entity</directory>
         </testsuite>
+
         <testsuite name="functional">
             <directory>tests/Controller</directory>
         </testsuite>
+
         <testsuite name="end">
             <file>tests/EndTest.php</file>
         </testsuite>
-
     </testsuites>
 
     <source restrictNotices="true" restrictWarnings="true">

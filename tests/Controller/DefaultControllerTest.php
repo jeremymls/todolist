@@ -33,7 +33,7 @@ class DefaultControllerTest extends WebTestCase
     {
 
         $userRepository = $this->em->getRepository(User::class);
-        $testUser = $userRepository->findOneBy(['username' => 'Test']);
+        $testUser = $userRepository->findOneBy(['username' => 'admin']);
 
         $urlGenerator = $this->client->getContainer()->get('router');
         $this->client->request(Request::METHOD_GET, $urlGenerator->generate('homepage'));

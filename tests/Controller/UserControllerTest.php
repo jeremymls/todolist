@@ -35,7 +35,7 @@ class UserControllerTest extends WebTestCase
         $this->em = $this->client->getContainer()->get('doctrine')->getManager();
         $this->urlGenerator = $this->client->getContainer()->get('router');
         $this->userRepository = $this->em->getRepository(User::class);
-        $this->testUser = $this->userRepository->findOneBy(['username' => 'Test']);
+        $this->testUser = $this->userRepository->findOneBy(['username' => 'admin']);
         $this->client->loginUser($this->testUser);
     }
 
@@ -47,7 +47,7 @@ class UserControllerTest extends WebTestCase
 
     public function testListUsersWithNoAdmin(): void
     {
-        $user = $this->userRepository->findOneBy(['username' => 'Test2']);
+        $user = $this->userRepository->findOneBy(['username' => 'user']);
         $this->client->loginUser($user);
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);

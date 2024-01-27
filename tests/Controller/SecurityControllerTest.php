@@ -59,7 +59,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $this->client->submitForm('Se connecter', [
-            '_username' => 'Test',
+            '_username' => 'admin',
             'password' => '123456',
         ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
