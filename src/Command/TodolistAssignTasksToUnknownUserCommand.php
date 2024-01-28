@@ -16,7 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'todolist:assign_tasks_to_unknown_user',
-    description: 'Commande pour assigner les tâches sans auteurs à un utilisateur inconnu',
+    description: 'Commande qui crée les utilisateurs "admin" et "Inconnu" et qui permet d\'assigner les tâches sans auteurs à l\'utilisateur Inconnu. Les mots de passe par défaut sont "123456".',
 )]
 class TodolistAssignTasksToUnknownUserCommand extends Command
 {
@@ -32,58 +32,75 @@ class TodolistAssignTasksToUnknownUserCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('mail', InputArgument::REQUIRED, 'Adresse mail de l\'utilisateur inconnu')
-            ->addArgument('pass', InputArgument::OPTIONAL, 'Mot de passe de l\'utilisateur inconnu (par défaut: "password")')
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $mail = $input->getArgument('mail');
-        $pass = $input->getArgument('pass') ?? 'password';
-
 
         $io->title('Assignation des tâches sans auteurs à un utilisateur inconnu');
-        $io->writeln('Adresse mail: ' . $mail);
-        $io->writeln('Mot de passe: ' . $pass);
+        sleep(2);
 
+        $need_flush = false;
 
-        $user = $this->registry->getRepository(User::class)->findOneByUsername('Inconnu');
-        if (null === $user) {
-            $io->section('Création de l\'utilisateur');
+        if (!$this->em->getRepository(User::class)->findOneBy(['username' => 'admin'])) {
+            $io->section('Création de l\'utilisateur admin');
+            $user = new User();
+            $user->setUsername('admin');
+            $user->setEmail('admin@email.fr');
+            $user->setPassword($this->passwordHasher->hashPassword($user, '123456'));
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->em->persist($user);
+            $need_flush = true;
+            $io->success('Utilisateur admin créé.');
+        } else {
+            $io->info('L\'utilisateur admin existe déjà.');
+        }
+        sleep(1);
+
+        if (!$this->em->getRepository(User::class)->findOneBy(['username' => 'Inconnu'])) {
+            $io->section('Création de l\'utilisateur Inconnu');
             $user = new User();
             $user->setUsername('Inconnu');
-            $user->setEmail($mail);
-            $user->setPassword($this->passwordHasher->hashPassword($user, $pass));
-
+            $user->setEmail('inconnu@test.fr');
+            $user->setPassword($this->passwordHasher->hashPassword($user, '123456'));
             $this->em->persist($user);
-            $this->em->flush();
-
-            $io->success('Utilisateur créé.');
+            $need_flush = true;
+            $io->success('Utilisateur Inconnu créé.');
         } else {
-            $io->info('L\'utilisateur existe déjà.');
+            $io->info('L\'utilisateur Inconnu existe déjà.');
+        }
+        sleep(1);
+
+        if ($need_flush) {
+            $this->em->flush();
+            $io->warning('Pensez à changer les mots de passe: 123456');
         }
 
         $tasks = $this->registry->getRepository(Task::class)->findBy(['user' => null]);
-        if (empty($tasks)) {
+
+        if (count($tasks) > 0) {
+            $io->section('Assignation des tâches');
+
+            $io->writeln('Nombre de tâches sans auteurs: ' . count($tasks));
+            $io->progressStart(count($tasks));
+
+            $unknownUser = $this->registry->getRepository(User::class)->findOneBy(['username' => 'Inconnu']);
+            foreach ($tasks as $task) {
+                $task->setUser($unknownUser);
+                $this->em->persist($task);
+                $io->progressAdvance();
+                usleep(200000);
+            }
+            $this->em->flush();
+            $io->progressFinish();
+
+            $io->success('Tâches assignées.');
+
+            return Command::SUCCESS;
+        } else {
             $io->success('Il n\'y a pas de tâches sans auteurs.');
             return Command::SUCCESS;
         }
-        $io->section('Assignation des tâches sans auteurs à l\'utilisateur');
-        $io->writeln('Nombre de tâches sans auteurs: ' . count($tasks));
-        $io->progressStart(count($tasks));
-        foreach ($tasks as $task) {
-            $task->setUser($user);
-            $this->em->persist($task);
-            $io->progressAdvance();
-        }
-        $this->em->flush();
-        $io->progressFinish();
-
-        $io->success('Tâches assignées.');
-
-        return Command::SUCCESS;
     }
 }
