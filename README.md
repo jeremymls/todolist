@@ -2,7 +2,7 @@
 
 ## Présentation
 
-Dépôt Git de [todolist](https://github.com/jeremymls/todolist).
+Dépôt Git de [todolist](https://todolist.jm-projets.fr).
 
 Ce projet est le huitième projet de la formation Développeur d'application - PHP/Symfony d'OpenClassrooms.
 
