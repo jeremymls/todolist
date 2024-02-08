@@ -57,16 +57,18 @@ class UserController extends AbstractController
     {
         $form = $this->createForm(UserType::class, $user);
         $old_pass = $user->getPassword();
+        $allValues = $request->request->all();
+        if ($form->isSubmitted() && $form->isValid() && $allValues['user']['password']['first']) {
+            $password = $passwordEncoder->hashPassword($user, $user->getPassword());
+            $user->setPassword($password);
+        } else {
+            $allValues['user']['password']['first'] = $old_pass;
+            $allValues['user']['password']['second'] = $old_pass;
+            $request->request->set('user', $allValues['user']);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($user->getPassword()) {
-                $password = $passwordEncoder->hashPassword($user, $user->getPassword());
-                $user->setPassword($password);
-            } else {
-                $user->setPassword($old_pass);
-            }
-
             $this->em->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
